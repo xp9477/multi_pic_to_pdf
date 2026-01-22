@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Grid Editor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b7e82",
+                        "primary-dark": "#206265",
+                        "background-light": "#f9fafb",
+                        "background-dark": "#17191c",
+                        "surface": "#ffffff",
+                        "surface-dark": "#24282e",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px",
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'paper': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 3px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #374151;
+        }
+        
+        /* A4 Page styles */
+        .a4-page {
+            width: 595px;
+            height: 842px;
+            aspect-ratio: 1/1.414;
+            transition: all 0.3s ease;
+        }
+        .a4-page.landscape {
+            width: 842px;
+            height: 595px;
+            aspect-ratio: 1.414/1;
+        }
+
+        /* Responsive scaling for smaller screens */
+        @media (max-width: 1024px) {
+            .a4-page {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1/1.414;
+            }
+            .a4-page.landscape {
+                aspect-ratio: 1.414/1;
+            }
+        }
+
+        .grid-cell-dashed {
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuA6gUMTc9GY2MoHiBXAMQi6rTz2FCfOT8OVzyAPuPejuhZJeTF-ZK4mUh1v-MbQ5_sWZ9-iymA5UdhaB6PMqIKzm8f5qR0SKbYpcLL6jkppC_AU1izPuPoFE5FUbVZzf-Uy58pnaIQYTC0ZZjxTOYkykeoedmex5bBFw1Gov30cQodcwG1uPFZ_TNUbJAflmN3PvzH5TGIZJTQJdyXQhDJ1P43APzJyikroAcrn7c-pbzW7HQESbYcPDiJRmH94C9ZCu-h_9tWVMxQ);
+            background-size: cover;
+        }
+        
+        /* Dragging visuals */
+        .dragging {
+            opacity: 0.5;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen overflow-hidden">
+    <div id="root" class="h-screen flex flex-col"></div>
+</body>
+</html>
