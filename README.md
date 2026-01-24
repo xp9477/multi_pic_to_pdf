@@ -1,20 +1,22 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Multi Pic to PDF
 
-# Run and deploy your AI Studio app
+A simple web application for arranging images into grid layouts and exporting them as PDFs.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/drive/164BX44KI9G-MMH8Oc1mAfwjpuuSl3NKd
+- **Grid System**: Flexible layouts including 1x1, 1x2, 2x2, and 3x3.
+- **Drag & Drop**: Intuitive interface for placing and reordering images.
+- **Customization**: Adjustable page margins, cell gaps, and image compression settings.
+- **Privacy First**: All image processing is performed locally in your browser.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
-
-
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
