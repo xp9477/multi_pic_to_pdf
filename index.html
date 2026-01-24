@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Grid Editor</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -44,17 +47,20 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: transparent;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #e5e7eb;
             border-radius: 3px;
         }
+
         .dark ::-webkit-scrollbar-thumb {
             background: #374151;
         }
-        
+
         /* A4 Page styles */
         .a4-page {
             width: 595px;
@@ -62,6 +68,7 @@
             aspect-ratio: 1/1.414;
             transition: all 0.3s ease;
         }
+
         .a4-page.landscape {
             width: 842px;
             height: 595px;
@@ -75,6 +82,7 @@
                 height: auto;
                 aspect-ratio: 1/1.414;
             }
+
             .a4-page.landscape {
                 aspect-ratio: 1.414/1;
             }
@@ -84,23 +92,19 @@
             background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuA6gUMTc9GY2MoHiBXAMQi6rTz2FCfOT8OVzyAPuPejuhZJeTF-ZK4mUh1v-MbQ5_sWZ9-iymA5UdhaB6PMqIKzm8f5qR0SKbYpcLL6jkppC_AU1izPuPoFE5FUbVZzf-Uy58pnaIQYTC0ZZjxTOYkykeoedmex5bBFw1Gov30cQodcwG1uPFZ_TNUbJAflmN3PvzH5TGIZJTQJdyXQhDJ1P43APzJyikroAcrn7c-pbzW7HQESbYcPDiJRmH94C9ZCu-h_9tWVMxQ);
             background-size: cover;
         }
-        
+
         /* Dragging visuals */
         .dragging {
             opacity: 0.5;
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
-</script>
+
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen overflow-hidden">
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen overflow-hidden">
     <div id="root" class="h-screen flex flex-col"></div>
+    <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
