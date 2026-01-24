@@ -30,7 +30,7 @@ const App: React.FC = () => {
             default: return { rows: 2, cols: 2 };
         }
     };
-    
+
     const { rows, cols } = getGridDimensions();
     const cellsPerPage = rows * cols;
 
@@ -76,12 +76,12 @@ const App: React.FC = () => {
 
             // If target cell has image, swap it out to unplaced
             if (newPlaced[targetIndex]) {
-                 newUnplaced.push(newPlaced[targetIndex]);
+                newUnplaced.push(newPlaced[targetIndex]);
             }
-            
+
             // Remove from unplaced
             newUnplaced.splice(sourceIndex, 1);
-            
+
             // Place in grid
             newPlaced[targetIndex] = imageToMove;
         } else if (sourceType === 'cell') {
@@ -92,7 +92,7 @@ const App: React.FC = () => {
             if (!sourceImage) return;
 
             newPlaced[targetIndex] = sourceImage;
-            
+
             if (targetImage) {
                 newPlaced[sourceIndex] = targetImage;
             } else {
@@ -115,6 +115,14 @@ const App: React.FC = () => {
         }
     };
 
+    const handleRemoveUnplaced = (index: number) => {
+        setUnplacedImages(prev => {
+            const newUnplaced = [...prev];
+            newUnplaced.splice(index, 1);
+            return newUnplaced;
+        });
+    };
+
     const handleReset = () => {
         if (confirm('Reset layout?')) {
             setPlacedImages({});
@@ -129,7 +137,7 @@ const App: React.FC = () => {
 
     const handleDeletePage = (pageIndex: number) => {
         if (totalPages <= 1) return;
-        
+
         // Check if page has images
         const start = pageIndex * cellsPerPage;
         const end = start + cellsPerPage;
@@ -141,12 +149,12 @@ const App: React.FC = () => {
         if (hasImages && !confirm('This page contains images. Are you sure you want to delete it? Images will be moved to unplaced.')) {
             return;
         }
-        
+
         const newPlaced = { ...placedImages };
         const restoredImages: ImageItem[] = [];
-        
+
         // Remove images from this page
-        for(let i = start; i < end; i++) {
+        for (let i = start; i < end; i++) {
             if (newPlaced[i]) {
                 restoredImages.push(newPlaced[i]);
                 delete newPlaced[i];
@@ -169,7 +177,7 @@ const App: React.FC = () => {
         setUnplacedImages(prev => [...prev, ...restoredImages]);
         setManualPageCount(prev => Math.max(1, prev - 1));
     };
-    
+
     // Grid CSS class generator
     const getGridClass = () => {
         let cls = 'grid w-full h-full ';
@@ -191,7 +199,7 @@ const App: React.FC = () => {
             <header className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 bg-surface dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 z-20 shrink-0 sticky top-0">
                 <div className="flex items-center gap-3">
                     {/* Mobile Menu Button */}
-                    <button 
+                    <button
                         onClick={() => setIsSidebarOpen(true)}
                         className="lg:hidden w-8 h-8 -ml-1 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                     >
@@ -207,7 +215,7 @@ const App: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-2 lg:gap-3">
-                    <button 
+                    <button
                         onClick={handleReset}
                         className="hidden md:flex items-center gap-2 h-9 px-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-semibold"
                     >
@@ -215,7 +223,7 @@ const App: React.FC = () => {
                         Reset
                     </button>
                     <div className="hidden md:block h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
-                    <button 
+                    <button
                         onClick={() => window.print()}
                         className="flex items-center gap-2 h-8 lg:h-9 px-3 lg:px-4 rounded-lg bg-primary hover:bg-primary-dark text-white shadow-sm transition-all text-xs lg:text-sm font-bold"
                     >
@@ -228,11 +236,12 @@ const App: React.FC = () => {
 
             {/* Main Workspace */}
             <div className="flex flex-1 overflow-hidden h-full relative">
-                <Sidebar 
-                    config={config} 
-                    setConfig={setConfig} 
-                    unplacedImages={unplacedImages} 
+                <Sidebar
+                    config={config}
+                    setConfig={setConfig}
+                    unplacedImages={unplacedImages}
                     onAddImages={handleAddImages}
+                    onRemoveUnplaced={handleRemoveUnplaced}
                     onDragStart={handleDragStart}
                     totalPlacedSize={totalPlacedSize}
                     isOpen={isSidebarOpen}
@@ -247,7 +256,7 @@ const App: React.FC = () => {
                             {totalPages} Page{totalPages > 1 ? 's' : ''}
                         </span>
                         <div className="w-px h-3 lg:h-4 bg-slate-300 dark:bg-slate-600"></div>
-                         <span className="text-xs lg:text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
+                        <span className="text-xs lg:text-sm font-medium text-slate-500 dark:text-slate-400 tabular-nums">
                             {Object.keys(placedImages).length} Img
                         </span>
                     </div>
@@ -261,7 +270,7 @@ const App: React.FC = () => {
                                     <div className="bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-[10px] lg:text-xs font-bold py-0.5 px-1.5 rounded mb-2">
                                         {pageIndex + 1}
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => handleDeletePage(pageIndex)}
                                         className="w-7 h-7 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-white dark:bg-slate-800 text-red-500 shadow-sm hover:scale-110 transition-transform"
                                         title="Delete Page"
@@ -271,19 +280,19 @@ const App: React.FC = () => {
                                 </div>
 
                                 {/* A4 Page Container */}
-                                <div 
+                                <div
                                     className={`a4-page bg-white shadow-paper rounded-sm shrink-0 flex flex-col transition-all duration-300 ${config.orientation}`}
                                     style={{ padding: `${config.margin}px` }}
                                 >
                                     {/* The Grid */}
-                                    <div 
+                                    <div
                                         className={getGridClass()}
                                         style={gridStyle}
                                     >
                                         {Array.from({ length: cellsPerPage }).map((_, cellIndex) => {
                                             const globalIndex = pageIndex * cellsPerPage + cellIndex;
                                             return (
-                                                <GridCell 
+                                                <GridCell
                                                     key={`cell-${globalIndex}`}
                                                     index={globalIndex}
                                                     image={placedImages[globalIndex]}
@@ -305,7 +314,7 @@ const App: React.FC = () => {
                         ))}
 
                         {/* Add Page Button */}
-                        <button 
+                        <button
                             onClick={handleAddPage}
                             className="flex flex-col items-center justify-center gap-2 w-full max-w-[595px] h-24 lg:h-32 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all group"
                         >

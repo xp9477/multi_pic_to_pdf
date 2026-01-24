@@ -6,6 +6,7 @@ interface SidebarProps {
     setConfig: React.Dispatch<React.SetStateAction<GridConfig>>;
     unplacedImages: ImageItem[];
     onAddImages: (files: FileList) => void;
+    onRemoveUnplaced: (index: number) => void;
     onDragStart: (item: DragItem) => void;
     totalPlacedSize: number;
     isOpen: boolean;
@@ -17,6 +18,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setConfig,
     unplacedImages,
     onAddImages,
+    onRemoveUnplaced,
     onDragStart,
     totalPlacedSize,
     isOpen,
@@ -37,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     // Estimate PDF size based on image sizes and compression
     const estimatedSize = useMemo(() => {
         if (totalPlacedSize === 0) return '0 B';
-        
+
         // Heuristic: Compression isn't linear. 
         // 100% ~ original size
         // 80% ~ 40-50% size typically for photos
@@ -55,14 +57,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <>
             {/* Mobile Overlay */}
             {isOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-sm"
                     onClick={onClose}
                 />
             )}
 
             {/* Sidebar Container */}
-            <aside 
+            <aside
                 className={`
                     fixed lg:static inset-y-0 left-0 z-40
                     w-80 bg-surface dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 
@@ -122,8 +124,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     <div className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary transition-all">
                                         <span className="material-symbols-outlined text-[20px]">
                                             {type === '1x1' ? 'crop_portrait' :
-                                            type === '1x2' ? 'grid_view' :
-                                            type === '2x2' ? 'window' : 'view_module'}
+                                                type === '1x2' ? 'grid_view' :
+                                                    type === '2x2' ? 'window' : 'view_module'}
                                         </span>
                                         <span className="text-sm font-medium">{type}</span>
                                     </div>
@@ -236,6 +238,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             >
                                 <img className="w-full h-full object-cover" src={img.src} alt={img.alt || 'Unplaced'} />
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onRemoveUnplaced(index);
+                                    }}
+                                    className="absolute top-0.5 right-0.5 bg-black/50 hover:bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="Remove"
+                                >
+                                    <span className="material-symbols-outlined text-[14px]">close</span>
+                                </button>
                             </div>
                         ))}
                         {unplacedImages.length === 0 && (
