@@ -97,20 +97,19 @@
         .dragging {
             opacity: 0.5;
         }
-        /* Dragging visuals */
-        .dragging {
-            opacity: 0.5;
-        }
+
 
         /* Print Styles */
         @media print {
+
             /* Hide everything by default */
             body * {
                 visibility: hidden;
             }
 
             /* Unhide the pages and their content */
-            .a4-page, .a4-page * {
+            .a4-page,
+            .a4-page * {
                 visibility: visible;
             }
 
@@ -128,27 +127,32 @@
                 background: white !important;
                 /* Remove grid gap visual if needed, but grid gap is important for layout */
             }
-            
+
             /* Hide page footer text */
             .page-footer {
                 display: none !important;
             }
 
             /* Container adjustments to remove scrolling/overflow */
-            body, #root, main {
+            body,
+            #root,
+            main {
                 overflow: visible !important;
                 height: auto !important;
                 background: white !important;
             }
 
             /* Hide specific UI elements securely */
-            header, aside, button, .group\/page > div:first-child { 
+            header,
+            aside,
+            button,
+            .group\/page>div:first-child {
                 display: none !important;
             }
-            
+
             /* Adjust grid gap for print if necessary, but usually px is fine */
         }
-
+    </style>
 </head>
 
 <body
