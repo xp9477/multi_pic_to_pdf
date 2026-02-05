@@ -338,7 +338,7 @@ const App: React.FC = () => {
                                     </div>
 
                                     {/* Footer */}
-                                    <div className="mt-auto pt-4 flex justify-between items-end text-[10px] text-slate-400 font-mono">
+                                    <div className="page-footer mt-auto pt-4 flex justify-between items-end text-[10px] text-slate-400 font-mono">
                                         <span>Grid Editor</span>
                                         <span>{pageIndex + 1}/{totalPages}</span>
                                     </div>
