@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "mobile-drag-drop": "^3.0.0-rc.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },

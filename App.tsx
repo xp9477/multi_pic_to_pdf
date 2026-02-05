@@ -131,6 +131,28 @@ const App: React.FC = () => {
         }
     };
 
+    const handleAutoLayout = () => {
+        const allImages = [
+            ...Object.entries(placedImages)
+                .sort(([a], [b]) => Number(a) - Number(b))
+                .map(([_, img]) => img),
+            ...unplacedImages
+        ];
+
+        if (allImages.length === 0) return;
+
+        if (!confirm(`Auto layout ${allImages.length} images? This will rearrange everything.`)) return;
+
+        const newPlaced: Record<number, ImageItem> = {};
+        allImages.forEach((img, i) => {
+            newPlaced[i] = img;
+        });
+
+        setPlacedImages(newPlaced);
+        setUnplacedImages([]);
+        setManualPageCount(1);
+    };
+
     const handleAddPage = () => {
         setManualPageCount(prev => prev + 1);
     };
@@ -216,6 +238,14 @@ const App: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 lg:gap-3">
                     <button
+                        onClick={handleAutoLayout}
+                        className="hidden md:flex items-center gap-2 h-9 px-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-semibold"
+                        title="Auto layout all images"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">auto_fix_high</span>
+                        Auto Layout
+                    </button>
+                    <button
                         onClick={handleReset}
                         className="hidden md:flex items-center gap-2 h-9 px-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-semibold"
                     >
@@ -246,6 +276,7 @@ const App: React.FC = () => {
                     totalPlacedSize={totalPlacedSize}
                     isOpen={isSidebarOpen}
                     onClose={() => setIsSidebarOpen(false)}
+                    onAutoLayout={handleAutoLayout}
                 />
 
                 {/* Preview Area */}

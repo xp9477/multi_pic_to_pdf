@@ -11,6 +11,7 @@ interface SidebarProps {
     totalPlacedSize: number;
     isOpen: boolean;
     onClose: () => void;
+    onAutoLayout: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -22,7 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onDragStart,
     totalPlacedSize,
     isOpen,
-    onClose
+    onClose,
+    onAutoLayout
 }) => {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -218,7 +220,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="mt-auto p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                     <div className="flex items-center justify-between mb-3">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Unplaced Images</h4>
-                        <span className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">{unplacedImages.length}</span>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={onAutoLayout}
+                                className="text-[10px] font-bold text-primary hover:text-primary-dark uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={unplacedImages.length === 0 && totalPlacedSize === 0}
+                                title="Automatically place all images"
+                            >
+                                Auto Fill
+                            </button>
+                            <span className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold px-1.5 py-0.5 rounded">{unplacedImages.length}</span>
+                        </div>
                     </div>
                     <div className="flex gap-2 overflow-x-auto pb-2 min-h-[70px]">
                         {unplacedImages.map((img, index) => (
