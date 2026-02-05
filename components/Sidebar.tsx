@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <span className="text-xs text-slate-500 font-mono">{config.layout}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
-                            {(['1x1', '1x2', '2x2', '3x3'] as GridType[]).map((type) => (
+                            {(['1x1', '1x2', '2x1', '2x2', '3x3'] as GridType[]).map((type) => (
                                 <label key={type} className="cursor-pointer">
                                     <input
                                         type="radio"
@@ -127,7 +127,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                         <span className="material-symbols-outlined text-[20px]">
                                             {type === '1x1' ? 'crop_portrait' :
                                                 type === '1x2' ? 'grid_view' :
-                                                    type === '2x2' ? 'window' : 'view_module'}
+                                                    type === '2x1' ? 'splitscreen' :
+                                                        type === '2x2' ? 'window' : 'view_module'}
                                         </span>
                                         <span className="text-sm font-medium">{type}</span>
                                     </div>

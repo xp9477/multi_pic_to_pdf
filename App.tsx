@@ -24,7 +24,8 @@ const App: React.FC = () => {
     const getGridDimensions = () => {
         switch (config.layout) {
             case '1x1': return { rows: 1, cols: 1 };
-            case '1x2': return { rows: 2, cols: 1 }; // Stacked vertically for portrait usually
+            case '1x2': return { rows: 2, cols: 1 }; // Stacked vertically
+            case '2x1': return { rows: 1, cols: 2 }; // Side-by-side
             case '2x2': return { rows: 2, cols: 2 };
             case '3x3': return { rows: 3, cols: 3 };
             default: return { rows: 2, cols: 2 };
@@ -205,6 +206,7 @@ const App: React.FC = () => {
         let cls = 'grid w-full h-full ';
         if (config.layout === '1x1') cls += 'grid-cols-1 grid-rows-1';
         else if (config.layout === '1x2') cls += 'grid-cols-1 grid-rows-2';
+        else if (config.layout === '2x1') cls += 'grid-cols-2 grid-rows-1';
         else if (config.layout === '2x2') cls += 'grid-cols-2 grid-rows-2';
         else if (config.layout === '3x3') cls += 'grid-cols-3 grid-rows-3';
         return cls;
