@@ -276,9 +276,9 @@ const App: React.FC = () => {
     };
 
     return (
-        <>
+        <div className="flex flex-col h-screen">
             {/* Header */}
-            <header className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 bg-surface dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 z-20 shrink-0 sticky top-0">
+            <header className="h-14 lg:h-16 flex items-center justify-between px-4 lg:px-6 bg-surface dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 z-20 shrink-0">
                 <div className="flex items-center gap-3">
                     {/* Mobile Menu Button */}
                     <button
@@ -325,7 +325,7 @@ const App: React.FC = () => {
             </header>
 
             {/* Main Workspace */}
-            <div className="flex flex-1 overflow-hidden h-full relative">
+            <div className="flex flex-1 overflow-hidden min-h-0 relative">
                 <Sidebar
                     config={config}
                     setConfig={setConfig}
@@ -418,7 +418,7 @@ const App: React.FC = () => {
 
                 </main>
             </div>
-        </>
+        </div>
     );
 };
 
