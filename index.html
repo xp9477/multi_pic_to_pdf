@@ -102,55 +102,79 @@
         /* Print Styles */
         @media print {
 
-            /* Hide everything by default */
-            body * {
-                visibility: hidden;
-            }
-
-            /* Unhide the pages and their content */
-            .a4-page,
-            .a4-page * {
-                visibility: visible;
-            }
-
-            /* Position pages at top left */
-            .a4-page {
-                position: absolute;
-                left: 0;
-                top: 0;
+            /* Remove all page margins */
+            @page {
                 margin: 0;
-                padding: 0;
-                box-shadow: none;
-                /* Reset any transforms */
-                transform: none !important;
-                /* Ensure background is white */
-                background: white !important;
-                /* Remove grid gap visual if needed, but grid gap is important for layout */
             }
 
-            /* Hide page footer text */
-            .page-footer {
-                display: none !important;
-            }
-
-            /* Container adjustments to remove scrolling/overflow */
-            body,
-            #root,
-            main {
-                overflow: visible !important;
-                height: auto !important;
-                background: white !important;
-            }
-
-            /* Hide specific UI elements securely */
+            /* Hide all UI elements */
             header,
             aside,
             button,
-            .group\/page>div:first-child {
+            .page-footer,
+            [class*="absolute"],
+            [class*="group-hover:"] {
                 display: none !important;
             }
 
-            /* Adjust grid gap for print if necessary, but usually px is fine */
+            /* Reset body and containers - transparent background */
+            body,
+            html {
+                background: transparent !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            #root,
+            main {
+                background: transparent !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Reset A4 page - remove all styling except grid */
+            .a4-page {
+                background: transparent !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 auto !important;
+                page-break-after: always !important;
+            }
+
+            .a4-page:last-of-type {
+                page-break-after: auto !important;
+            }
+
+            /* Strip all styling from grid */
+            .a4-page>div {
+                background: transparent !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* Strip all styling from grid cells - keep only images */
+            .a4-page>div>div {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* Hide grid cell overlays and decorations */
+            .a4-page>div>div>div:not(img) {
+                display: none !important;
+            }
+
+            /* Ensure images are visible */
+            img {
+                max-width: 100% !important;
+                height: auto !important;
+                display: block !important;
+            }
         }
     </style>
 </head>
