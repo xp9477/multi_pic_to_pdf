@@ -3,6 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { GridCell } from './components/GridCell';
 import { GridConfig, ImageItem, DragItem } from './types';
 import { INITIAL_PLACED_IMAGES, INITIAL_UNPLACED_IMAGES } from './constants';
+import jsPDF from 'jspdf';
 
 const App: React.FC = () => {
     // State
@@ -154,6 +155,63 @@ const App: React.FC = () => {
         setManualPageCount(1);
     };
 
+    const handleDownloadPDF = async () => {
+        try {
+            // A4 size in mm
+            const pageWidth = config.orientation === 'portrait' ? 210 : 297;
+            const pageHeight = config.orientation === 'portrait' ? 297 : 210;
+
+            const pdf = new jsPDF({
+                orientation: config.orientation,
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            let isFirstPage = true;
+
+            // Loop through each page
+            for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+                if (!isFirstPage) {
+                    pdf.addPage();
+                }
+                isFirstPage = false;
+
+                const startIndex = pageIndex * cellsPerPage;
+                const endIndex = startIndex + cellsPerPage;
+
+                // Calculate cell dimensions
+                const cellWidth = pageWidth / cols;
+                const cellHeight = pageHeight / rows;
+
+                // Add images for this page
+                for (let cellIndex = 0; cellIndex < cellsPerPage; cellIndex++) {
+                    const globalIndex = startIndex + cellIndex;
+                    const image = placedImages[globalIndex];
+
+                    if (image) {
+                        const row = Math.floor(cellIndex / cols);
+                        const col = cellIndex % cols;
+                        const x = col * cellWidth;
+                        const y = row * cellHeight;
+
+                        try {
+                            // Add image to PDF
+                            pdf.addImage(image.src, 'JPEG', x, y, cellWidth, cellHeight, undefined, 'FAST');
+                        } catch (err) {
+                            console.error('Failed to add image:', err);
+                        }
+                    }
+                }
+            }
+
+            // Download the PDF
+            pdf.save('grid-layout.pdf');
+        } catch (error) {
+            console.error('Failed to generate PDF:', error);
+            alert('Failed to generate PDF. Please try again.');
+        }
+    };
+
     const handleAddPage = () => {
         setManualPageCount(prev => prev + 1);
     };
@@ -256,7 +314,7 @@ const App: React.FC = () => {
                     </button>
                     <div className="hidden md:block h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
                     <button
-                        onClick={() => window.print()}
+                        onClick={handleDownloadPDF}
                         className="flex items-center gap-2 h-8 lg:h-9 px-3 lg:px-4 rounded-lg bg-primary hover:bg-primary-dark text-white shadow-sm transition-all text-xs lg:text-sm font-bold"
                     >
                         <span className="material-symbols-outlined text-[18px] lg:text-[20px]">download</span>
