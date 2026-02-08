@@ -146,7 +146,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen p-4 lg:p-8 gap-4 lg:gap-6 bg-slate-50 dark:bg-slate-900">
+        <div className="flex flex-col h-screen p-4 lg:p-8 gap-4 lg:gap-6 bg-slate-50 dark:bg-slate-900 pb-24 lg:pb-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -182,8 +182,8 @@ const App: React.FC = () => {
                             key={type}
                             onClick={() => setLayout(type)}
                             className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${layout === type
-                                    ? 'bg-primary text-white shadow-sm'
-                                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                ? 'bg-primary text-white shadow-sm'
+                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                                 }`}
                         >
                             {type.replace('x', '×')}
@@ -228,15 +228,17 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Download Button */}
+            {/* Download Button - Fixed at bottom on mobile */}
             {allImages.length > 0 && (
-                <button
-                    onClick={handleDownloadPDF}
-                    className="w-full lg:w-auto lg:self-center px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
-                >
-                    <span className="material-symbols-outlined text-[28px]">download</span>
-                    下载 PDF ({totalPages} 页, {allImages.length} 张图片)
-                </button>
+                <div className="fixed lg:relative bottom-0 left-0 right-0 p-4 lg:p-0 bg-white lg:bg-transparent dark:bg-slate-900 lg:dark:bg-transparent border-t lg:border-t-0 border-slate-200 dark:border-slate-700 lg:self-center">
+                    <button
+                        onClick={handleDownloadPDF}
+                        className="w-full lg:w-auto px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
+                    >
+                        <span className="material-symbols-outlined text-[28px]">download</span>
+                        下载 PDF ({totalPages} 页, {allImages.length} 张图片)
+                    </button>
+                </div>
             )}
         </div>
     );

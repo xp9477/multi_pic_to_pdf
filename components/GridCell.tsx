@@ -53,11 +53,11 @@ export const GridCell: React.FC<GridCellProps> = ({ index, image, onRemove, onDr
                 className="relative group w-full h-full rounded-md overflow-hidden bg-slate-50 border border-slate-100 shadow-sm cursor-grab active:cursor-grabbing hover:ring-2 hover:ring-primary/50 transition-all"
             >
                 <img
-                    className="w-full h-full object-contain pointer-events-none" // pointer-events-none prevents img drag ghosting sometimes interfering with parent div drag
+                    className="w-full h-full object-contain pointer-events-none"
                     src={image.src}
                     alt={image.alt || `Cell ${index}`}
                 />
-                
+
                 {/* Hover Actions */}
                 <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     <button
