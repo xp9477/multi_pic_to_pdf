@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { UploadZone } from './components/UploadZone';
-import { GridCell } from './components/GridCell';
-import { GridConfig, ImageItem, DragItem, GridType } from './types';
+import { GridType } from './types';
 import jsPDF from 'jspdf';
 
 const App: React.FC = () => {
@@ -14,7 +13,6 @@ const App: React.FC = () => {
     const ORIENTATION = 'portrait';
 
     const [allImages, setAllImages] = useState<ImageItem[]>([]);
-    const [draggingItem, setDraggingItem] = useState<DragItem | null>(null);
 
     // Grid Calculation
     const getGridDimensions = () => {
@@ -60,22 +58,7 @@ const App: React.FC = () => {
         }
     };
 
-    const handleDragStart = (item: DragItem) => {
-        setDraggingItem(item);
-    };
 
-    const handleCellDrop = (targetIndex: number, data: any) => {
-        if (data.type === 'cell' && data.index !== targetIndex) {
-            // Swap images
-            setAllImages(prev => {
-                const newImages = [...prev];
-                const temp = newImages[data.index];
-                newImages[data.index] = newImages[targetIndex];
-                newImages[targetIndex] = temp;
-                return newImages;
-            });
-        }
-    };
 
     const handleDownloadPDF = async () => {
         if (allImages.length === 0) {
@@ -86,6 +69,11 @@ const App: React.FC = () => {
         try {
             const pageWidth = 210;
             const pageHeight = 297;
+
+            // Convert px to mm (assuming 96 DPI)
+            const pxToMm = (px: number) => px * 0.264583;
+            const marginMm = pxToMm(MARGIN);
+            const gapMm = pxToMm(GAP);
 
             const pdf = new jsPDF({
                 orientation: ORIENTATION,
@@ -101,8 +89,15 @@ const App: React.FC = () => {
                 }
                 isFirstPage = false;
 
-                const cellWidth = pageWidth / cols;
-                const cellHeight = pageHeight / rows;
+                // Calculate usable area (page - margins)
+                const usableWidth = pageWidth - (marginMm * 2);
+                const usableHeight = pageHeight - (marginMm * 2);
+
+                // Calculate cell dimensions (including gaps)
+                const totalGapWidth = (cols - 1) * gapMm;
+                const totalGapHeight = (rows - 1) * gapMm;
+                const cellWidth = (usableWidth - totalGapWidth) / cols;
+                const cellHeight = (usableHeight - totalGapHeight) / rows;
 
                 for (let cellIndex = 0; cellIndex < cellsPerPage; cellIndex++) {
                     const globalIndex = pageIndex * cellsPerPage + cellIndex;
@@ -111,8 +106,10 @@ const App: React.FC = () => {
                     if (image) {
                         const row = Math.floor(cellIndex / cols);
                         const col = cellIndex % cols;
-                        const x = col * cellWidth;
-                        const y = row * cellHeight;
+
+                        // Position with margin and gap
+                        const x = marginMm + (col * (cellWidth + gapMm));
+                        const y = marginMm + (row * (cellHeight + gapMm));
 
                         try {
                             pdf.addImage(image.src, 'JPEG', x, y, cellWidth, cellHeight, undefined, 'FAST');
@@ -130,20 +127,7 @@ const App: React.FC = () => {
         }
     };
 
-    // Grid CSS class
-    const getGridClass = () => {
-        let cls = 'grid w-full h-full ';
-        if (layout === '1x1') cls += 'grid-cols-1 grid-rows-1';
-        else if (layout === '1x2') cls += 'grid-cols-1 grid-rows-2';
-        else if (layout === '2x1') cls += 'grid-cols-2 grid-rows-1';
-        else if (layout === '2x2') cls += 'grid-cols-2 grid-rows-2';
-        else if (layout === '3x3') cls += 'grid-cols-3 grid-rows-3';
-        return cls;
-    };
 
-    const gridStyle = {
-        gap: `${GAP}px`,
-    };
 
     return (
         <div className="flex flex-col h-screen p-4 lg:p-8 gap-4 lg:gap-6 bg-slate-50 dark:bg-slate-900 pb-24 lg:pb-8">
@@ -189,42 +173,6 @@ const App: React.FC = () => {
                             {type.replace('x', '×')}
                         </button>
                     ))}
-                </div>
-            )}
-
-            {/* Preview Area */}
-            {allImages.length > 0 && (
-                <div className="flex-1 overflow-auto bg-white dark:bg-slate-800 rounded-xl p-4 lg:p-6">
-                    <div className="flex flex-col gap-6 items-center">
-                        {Array.from({ length: totalPages }).map((_, pageIndex) => (
-                            <div key={pageIndex} className="relative">
-                                <div className="absolute -top-3 -left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
-                                    第 {pageIndex + 1} 页
-                                </div>
-                                <div
-                                    className="a4-page bg-white shadow-lg rounded-sm"
-                                    style={{ padding: `${MARGIN}px` }}
-                                >
-                                    <div className={getGridClass()} style={gridStyle}>
-                                        {Array.from({ length: cellsPerPage }).map((_, cellIndex) => {
-                                            const globalIndex = pageIndex * cellsPerPage + cellIndex;
-                                            const image = allImages[globalIndex];
-                                            return (
-                                                <GridCell
-                                                    key={`cell-${globalIndex}`}
-                                                    index={globalIndex}
-                                                    image={image}
-                                                    onRemove={() => handleRemoveImage(globalIndex)}
-                                                    onDrop={(data) => handleCellDrop(globalIndex, data)}
-                                                    onDragStart={() => handleDragStart({ type: 'cell', index: globalIndex, id: image?.id || '' })}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             )}
 
