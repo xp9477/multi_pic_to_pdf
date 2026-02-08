@@ -197,18 +197,21 @@ const App: React.FC = () => {
                     <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                         布局:
                     </span>
-                    {(['1x1', '1x2', '2x1', '2x2', '3x3'] as GridType[]).map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setLayout(type)}
-                            className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${layout === type
-                                ? 'bg-primary text-white shadow-sm'
-                                : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-                                }`}
-                        >
-                            {type.replace('x', '×')}
-                        </button>
-                    ))}
+                    {(['1x1', '1x2', '2x1', '2x2', '3x3'] as GridType[]).map((type) => {
+                        const [rows, cols] = type.split('x');
+                        return (
+                            <button
+                                key={type}
+                                onClick={() => setLayout(type)}
+                                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${layout === type
+                                    ? 'bg-primary text-white shadow-sm'
+                                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                    }`}
+                            >
+                                {rows}行×{cols}列
+                            </button>
+                        );
+                    })}
                 </div>
             )}
 
