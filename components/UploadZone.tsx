@@ -44,7 +44,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, imageCo
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             className={`
-                relative border-2 border-dashed rounded-xl p-8 lg:p-12 
+                relative border-2 border-dashed rounded-xl p-4 lg:p-6 
                 cursor-pointer transition-all duration-200
                 ${isDragging
                     ? 'border-primary bg-primary/5 scale-[0.98]'
@@ -61,24 +61,24 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFilesSelected, imageCo
                 className="hidden"
             />
 
-            <div className="flex flex-col items-center gap-4 text-center">
-                <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-primary text-[40px] lg:text-[48px]">
+            <div className="flex flex-col items-center gap-2 text-center">
+                <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-primary text-[32px] lg:text-[36px]">
                         add_photo_alternate
                     </span>
                 </div>
 
                 <div>
-                    <h3 className="text-lg lg:text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+                    <h3 className="text-base lg:text-lg font-bold text-slate-800 dark:text-slate-100 mb-1">
                         点击上传图片
                     </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                         或拖拽图片到此处
                     </p>
                 </div>
 
                 {imageCount > 0 && (
-                    <div className="mt-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                    <div className="mt-1 px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-xs">
                         已选择 {imageCount} 张图片
                     </div>
                 )}
