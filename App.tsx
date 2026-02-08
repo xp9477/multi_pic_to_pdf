@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { UploadZone } from './components/UploadZone';
-import { GridType } from './types';
+import { GridType, ImageItem } from './types';
 import jsPDF from 'jspdf';
 
 const App: React.FC = () => {
@@ -108,11 +108,47 @@ const App: React.FC = () => {
                         const col = cellIndex % cols;
 
                         // Position with margin and gap
-                        const x = marginMm + (col * (cellWidth + gapMm));
-                        const y = marginMm + (row * (cellHeight + gapMm));
+                        const cellX = marginMm + (col * (cellWidth + gapMm));
+                        const cellY = marginMm + (row * (cellHeight + gapMm));
 
                         try {
-                            pdf.addImage(image.src, 'JPEG', x, y, cellWidth, cellHeight, undefined, 'FAST');
+                            // Load image to get dimensions
+                            const img = new Image();
+                            img.src = image.src;
+                            await new Promise((resolve) => {
+                                img.onload = resolve;
+                            });
+
+                            // Calculate aspect ratio
+                            const imgRatio = img.width / img.height;
+                            const cellRatio = cellWidth / cellHeight;
+
+                            let drawWidth = cellWidth;
+                            let drawHeight = cellHeight;
+                            let offsetX = 0;
+                            let offsetY = 0;
+
+                            // Fit image within cell while maintaining aspect ratio (object-contain)
+                            if (imgRatio > cellRatio) {
+                                // Image is wider - fit to width
+                                drawHeight = cellWidth / imgRatio;
+                                offsetY = (cellHeight - drawHeight) / 2;
+                            } else {
+                                // Image is taller - fit to height
+                                drawWidth = cellHeight * imgRatio;
+                                offsetX = (cellWidth - drawWidth) / 2;
+                            }
+
+                            pdf.addImage(
+                                image.src,
+                                'JPEG',
+                                cellX + offsetX,
+                                cellY + offsetY,
+                                drawWidth,
+                                drawHeight,
+                                undefined,
+                                'FAST'
+                            );
                         } catch (err) {
                             console.error('Failed to add image:', err);
                         }
@@ -173,6 +209,40 @@ const App: React.FC = () => {
                             {type.replace('x', '×')}
                         </button>
                     ))}
+                </div>
+            )}
+
+            {/* Image List Preview */}
+            {allImages.length > 0 && (
+                <div className="flex-1 bg-white dark:bg-slate-800 rounded-xl p-4 lg:p-6 overflow-auto">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-bold">已选图片 ({allImages.length})</h2>
+                        <div className="text-sm text-slate-500">
+                            共 {totalPages} 页 · {layout.replace('x', '×')} 布局
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        {allImages.map((img, index) => (
+                            <div key={img.id} className="relative group">
+                                <div className="aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600">
+                                    <img
+                                        src={img.src}
+                                        alt={img.alt || `Image ${index + 1}`}
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+                                <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    #{index + 1}
+                                </div>
+                                <button
+                                    onClick={() => handleRemoveImage(index)}
+                                    className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">close</span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 
