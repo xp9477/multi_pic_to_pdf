@@ -10,10 +10,6 @@ export type Orientation = 'portrait' | 'landscape';
 
 export interface GridConfig {
     layout: GridType;
-    gap: number; // px
-    margin: number; // px
-    compression: number; // %
-    orientation: Orientation;
 }
 
 export interface DragItem {
