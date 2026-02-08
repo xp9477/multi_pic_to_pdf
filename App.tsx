@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 const App: React.FC = () => {
     // Simplified state
     const [layout, setLayout] = useState<GridType>('2x2');
+    const [email, setEmail] = useState<string>('');
 
     // Fixed values (previously configurable)
     const GAP = 8;
@@ -59,8 +60,16 @@ const App: React.FC = () => {
     };
 
 
+    // Generate filename
+    const generateFilename = () => {
+        const now = new Date();
+        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+        const timestamp = now.getTime();
+        return `grid-${dateStr}-${timestamp}.pdf`;
+    };
 
-    const handleDownloadPDF = async () => {
+    // Generate PDF (returns PDF object)
+    const generatePDF = async (): Promise<jsPDF | null> => {
         if (allImages.length === 0) {
             alert('请先上传图片');
             return;
@@ -156,10 +165,57 @@ const App: React.FC = () => {
                 }
             }
 
-            pdf.save('grid-layout.pdf');
+            return pdf;
         } catch (error) {
             console.error('Failed to generate PDF:', error);
             alert('生成PDF失败，请重试');
+            return null;
+        }
+    };
+
+    // Download PDF
+    const handleDownload = async () => {
+        const pdf = await generatePDF();
+        if (pdf) {
+            const filename = generateFilename();
+            pdf.save(filename);
+        }
+    };
+
+    // Send PDF to email (using Web Share API)
+    const handleSendEmail = async () => {
+        const pdf = await generatePDF();
+        if (!pdf) return;
+
+        try {
+            // Generate PDF blob
+            const pdfBlob = pdf.output('blob');
+            const filename = generateFilename();
+
+            // Create File object from blob
+            const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+            // Check if Web Share API is supported
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                // Use Web Share API (works on iOS Safari)
+                await navigator.share({
+                    title: '图片PDF文件',
+                    text: email ? `发送到: ${email}` : '分享PDF文件',
+                    files: [pdfFile]
+                });
+            } else if (navigator.share) {
+                // Fallback: Share without file
+                alert('您的浏览器不支持分享文件。\n\n请使用"下载PDF"按钮，然后手动发送邮件。');
+            } else {
+                // No Web Share API support
+                alert('您的浏览器不支持分享功能。\n\n请使用"下载PDF"按钮下载后手动发送。');
+            }
+        } catch (error) {
+            // User cancelled share or error occurred
+            if (error instanceof Error && error.name !== 'AbortError') {
+                console.error('Share failed:', error);
+                alert('分享失败，请使用"下载PDF"按钮。');
+            }
         }
     };
 
@@ -249,16 +305,47 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Download Button - Fixed at bottom on mobile */}
+            {/* Email & Download Section - Fixed at bottom on mobile */}
             {allImages.length > 0 && (
-                <div className="fixed lg:relative bottom-0 left-0 right-0 p-4 lg:p-0 bg-white lg:bg-transparent dark:bg-slate-900 lg:dark:bg-transparent border-t lg:border-t-0 border-slate-200 dark:border-slate-700 lg:self-center">
-                    <button
-                        onClick={handleDownloadPDF}
-                        className="w-full lg:w-auto px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
-                    >
-                        <span className="material-symbols-outlined text-[28px]">download</span>
-                        下载 PDF ({totalPages} 页, {allImages.length} 张图片)
-                    </button>
+                <div className="fixed lg:relative bottom-0 left-0 right-0 p-4 lg:p-0 bg-white lg:bg-transparent dark:bg-slate-900 lg:dark:bg-transparent border-t lg:border-t-0 border-slate-200 dark:border-slate-700">
+                    <div className="flex flex-col gap-3 lg:self-center lg:max-w-2xl lg:mx-auto">
+                        {/* Email Input */}
+                        <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 rounded-lg px-4 py-2 border border-slate-200 dark:border-slate-700">
+                            <span className="material-symbols-outlined text-slate-400 text-[20px]">mail</span>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="收件人邮箱（可选）"
+                                className="flex-1 bg-transparent border-none outline-none text-sm"
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={handleDownload}
+                                className="flex-1 px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white font-bold text-base rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[24px]">download</span>
+                                <span className="hidden sm:inline">下载PDF</span>
+                                <span className="sm:hidden">下载</span>
+                            </button>
+                            <button
+                                onClick={handleSendEmail}
+                                className="flex-1 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold text-base rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[24px]">send</span>
+                                <span className="hidden sm:inline">发送邮件</span>
+                                <span className="sm:hidden">发送</span>
+                            </button>
+                        </div>
+
+                        {/* Info Text */}
+                        <p className="text-xs text-center text-slate-500">
+                            {totalPages} 页 · {allImages.length} 张图片
+                        </p>
+                    </div>
                 </div>
             )}
         </div>
