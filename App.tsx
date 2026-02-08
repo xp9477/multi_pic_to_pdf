@@ -19,8 +19,8 @@ const App: React.FC = () => {
     const getGridDimensions = () => {
         switch (layout) {
             case '1x1': return { rows: 1, cols: 1 };
-            case '1x2': return { rows: 2, cols: 1 };
-            case '2x1': return { rows: 1, cols: 2 };
+            case '1x2': return { rows: 1, cols: 2 };
+            case '2x1': return { rows: 2, cols: 1 };
             case '2x2': return { rows: 2, cols: 2 };
             case '3x3': return { rows: 3, cols: 3 };
             default: return { rows: 2, cols: 2 };
